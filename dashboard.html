@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Educação Básica no Brasil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles dashboard.css">
+</head>
+<body class="bg-gray-100">
+    <!-- Header/Navigation -->
+    <header class="bg-blue-600 text-white shadow-md">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <svg class="h-8 w-8 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="font-semibold text-xl">EduAnalytics Dashboard</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="index.html" class="hover:text-blue-200">Página Inicial</a>
+                    <a href="#sobre" class="hover:text-blue-200">Sobre os Dados</a>
+                </div>
+                <button class="md:hidden focus:outline-none">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Dashboard Title -->
+    <section class="bg-white shadow-sm">
+        <div class="container mx-auto px-6 py-8">
+            <h1 class="text-3xl font-bold text-gray-800">Educação Básica no Brasil</h1>
+            <p class="text-gray-600 mt-2">Dados do Censo Escolar - INEP</p>
+        </div>
+    </section>
+
+    <!-- Power BI Dashboard -->
+    <section class="py-8">
+        <div class="container mx-auto px-6">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-800">Visualização Interativa</h2>
+                    <p class="text-gray-600 mt-1">Explore os dados da educação básica no Brasil</p>
+                </div>
+                <div class="p-4">
+                    <div class="powerbi-container">
+                        <iframe class="powerbi-iframe" 
+                            src="https://app.powerbi.com/view?r=eyJrIjoiN2ViNDBjNDEtMTM0OC00ZmFhLWIyZWYtZjI1YjU0NzQzMTJhIiwidCI6IjI2ZjczODk3LWM4YWMtNGIxZS05NzhmLWVhNGMwNzc0MzRiZiJ9" 
+                            frameborder="0" allowFullScreen="true">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Explanation -->
+    <section id="sobre" class="py-8 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-xl font-semibold text-gray-800">Sobre os Dados</h2>
+                </div>
+                <div class="p-6">
+                    <div class="prose max-w-none">
+                        <h3 class="text-lg font-medium text-gray-800">Fonte dos Dados</h3>
+                        <p class="mt-2 text-gray-600">
+                            Os dados apresentados neste dashboard são provenientes do Censo Escolar realizado pelo INEP (Instituto Nacional de Estudos e Pesquisas Educacionais Anísio Teixeira), órgão vinculado ao Ministério da Educação.
+                        </p>
+                        <h3 class="text-lg font-medium text-gray-800 mt-4">Indicadores Disponíveis</h3>
+                        <ul class="mt-2 text-gray-600 list-disc pl-5 space-y-1">
+                            <li>Matrículas por nível de ensino</li>
+                            <li>Taxas de aprovação, reprovação e abandono</li>
+                            <li>Indicadores de infraestrutura escolar</li>
+                            <li>Distorção idade-série</li>
+                            <li>IDEB (Índice de Desenvolvimento da Educação Básica)</li>
+                        </ul>
+                        <h3 class="text-lg font-medium text-gray-800 mt-4">Periodicidade</h3>
+                        <p class="mt-2 text-gray-600">
+                            O Censo Escolar é realizado anualmente e os dados são coletados em todas as escolas públicas e privadas do país.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-6 md:mb-0">
+                    <div class="flex items-center">
+                        <svg class="h-6 w-6 mr-2 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="font-semibold">EduAnalytics</span>
+                    </div>
+                    <p class="text-gray-400 mt-2">© 2025 - Todos os direitos reservados</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

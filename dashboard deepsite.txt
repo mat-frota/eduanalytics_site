@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Educação Básica no Brasil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        .map-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="bg-blue-700 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold">Educação Básica no Brasil</h1>
+                    <p class="text-blue-100">Análise de indicadores educacionais por região</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <select class="bg-blue-600 text-white px-4 py-2 rounded-lg appearance-none pr-8">
+                            <option>2022</option>
+                            <option>2021</option>
+                            <option>2020</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <button class="bg-blue-800 hover:bg-blue-900 px-4 py-2 rounded-lg flex items-center">
+                        <i class="fas fa-download mr-2"></i> Exportar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500">Taxa de Evasão</p>
+                        <h3 class="text-3xl font-bold text-blue-700">8.4%</h3>
+                        <p class="text-sm text-gray-500 mt-1">+0.2% vs 2021</p>
+                    </div>
+                    <div class="bg-red-100 text-red-800 p-2 rounded-full">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="h-2 bg-gray-200 rounded-full">
+                        <div class="h-2 bg-red-500 rounded-full" style="width: 84%"></div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Meta: <5%</p>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500">Média IDEB</p>
+                        <h3 class="text-3xl font-bold text-blue-700">5.2</h3>
+                        <p class="text-sm text-gray-500 mt-1">+0.3 vs 2021</p>
+                    </div>
+                    <div class="bg-green-100 text-green-800 p-2 rounded-full">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="h-2 bg-gray-200 rounded-full">
+                        <div class="h-2 bg-green-500 rounded-full" style="width: 65%"></div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Meta: 6.0</p>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500">Escolas com Internet</p>
+                        <h3 class="text-3xl font-bold text-blue-700">76%</h3>
+                        <p class="text-sm text-gray-500 mt-1">+12% vs 2021</p>
+                    </div>
+                    <div class="bg-blue-100 text-blue-800 p-2 rounded-full">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="h-2 bg-gray-200 rounded-full">
+                        <div class="h-2 bg-blue-500 rounded-full" style="width: 76%"></div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Meta: 100%</p>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 card-hover">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-500">Infraestrutura Básica</p>
+                        <h3 class="text-3xl font-bold text-blue-700">63%</h3>
+                        <p class="text-sm text-gray-500 mt-1">+5% vs 2021</p>
+                    </div>
+                    <div class="bg-yellow-100 text-yellow-800 p-2 rounded-full">
+                        <i class="fas fa-school"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <div class="h-2 bg-gray-200 rounded-full">
+                        <div class="h-2 bg-yellow-500 rounded-full" style="width: 63%"></div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Meta: 80%</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Filters -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="flex flex-wrap items-center gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Região</label>
+                    <select id="region-filter" class="w-full md:w-48 bg-gray-100 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="all">Todas as regiões</option>
+                        <option value="norte">Norte</option>
+                        <option value="nordeste">Nordeste</option>
+                        <option value="centro-oeste">Centro-Oeste</option>
+                        <option value="sudeste">Sudeste</option>
+                        <option value="sul">Sul</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nível de Ensino</label>
+                    <select id="education-level" class="w-full md:w-48 bg-gray-100 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="all">Todos os níveis</option>
+                        <option value="fundamental">Fundamental</option>
+                        <option value="medio">Médio</option>
+                        <option value="infantil">Infantil</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de Escola</label>
+                    <select id="school-type" class="w-full md:w-48 bg-gray-100 border border-gray-300 text-gray-700 py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="all">Todos os tipos</option>
+                        <option value="publica">Pública</option>
+                        <option value="privada">Privada</option>
+                    </select>
+                </div>
+                <div class="ml-auto">
+                    <button id="apply-filters" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-lg flex items-center">
+                        <i class="fas fa-filter mr-2"></i> Aplicar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- IDEB by Region -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-gray-800">Desempenho do IDEB por Região</h2>
+                    <div class="flex space-x-2">
+                        <button class="text-gray-500 hover:text-blue-600">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="text-gray-500 hover:text-blue-600">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="ideb-chart" class="h-80"></div>
+                <p class="text-sm text-gray-500 mt-2">*IDEB - Índice de Desenvolvimento da Educação Básica</p>
+            </div>
+            
+            <!-- Dropout Rate by State -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-gray-800">Taxa de Evasão Escolar por Estado</h2>
+                    <div class="flex space-x-2">
+                        <button class="text-gray-500 hover:text-blue-600">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="text-gray-500 hover:text-blue-600">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="dropout-chart" class="h-80"></div>
+                <p class="text-sm text-gray-500 mt-2">*Dados do Censo Escolar 2022</p>
+            </div>
+        </div>
+        
+        <!-- Map and Time Series -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Brazil Map -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-gray-800">Infraestrutura Escolar por Estado</h2>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
+                            <span class="text-sm">Boa</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-yellow-500 rounded-full mr-2"></div>
+                            <span class="text-sm">Média</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+                            <span class="text-sm">Ruim</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="map-container">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Brazil_blank_map_with_borders.svg/1200px-Brazil_blank_map_with_borders.svg.png" alt="Mapa do Brasil" class="w-full h-full object-contain" id="brazil-map">
+                    <div class="tooltip" id="map-tooltip"></div>
+                </div>
+                <p class="text-sm text-gray-500 mt-2">Clique em um estado para ver detalhes</p>
+            </div>
+            
+            <!-- IDEB Time Series -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-gray-800">Evolução do IDEB (2015-2022)</h2>
+                    <div class="flex space-x-2">
+                        <button class="text-gray-500 hover:text-blue-600">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <button class="text-gray-500 hover:text-blue-600">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+                <canvas id="ideb-time-series" height="300"></canvas>
+                <div class="flex justify-center mt-4 space-x-4">
+                    <button class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm font-medium">Fundamental</button>
+                    <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium">Médio</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Infrastructure Indicators -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold text-gray-800">Indicadores de Infraestrutura Escolar</h2>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-gray-600">Comparar com:</span>
+                    <select class="bg-gray-100 border border-gray-300 text-gray-700 py-1 px-3 rounded-lg text-sm">
+                        <option>Média Nacional</option>
+                        <option>Melhores Estados</option>
+                        <option>Piores Estados</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="p-4 border rounded-lg">
+                    <div class="flex items-center mb-3">
+                        <div class="bg-blue-100 p-2 rounded-full mr-3">
+                            <i class="fas fa-toilet text-blue-600"></i>
+                        </div>
+                        <h3 class="font-medium">Banheiro</h3>
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <p class="text-2xl font-bold">78%</p>
+                            <p class="text-sm text-gray-500">Escolas com banheiro</p>
+                        </div>
+                        <span class="text-green-500 text-sm font-medium">+4%</span>
+                    </div>
+                </div>
+                
+                <div class="p-4 border rounded-lg">
+                    <div class="flex items-center mb-3">
+                        <div class="bg-purple-100 p-2 rounded-full mr-3">
+                            <i class="fas fa-laptop text-purple-600"></i>
+                        </div>
+                        <h3 class="font-medium">Laboratório</h3>
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <p class="text-2xl font-bold">42%</p>
+                            <p class="text-sm text-gray-500">Escolas com laboratório</p>
+                        </div>
+                        <span class="text-green-500 text-sm font-medium">+8%</span>
+                    </div>
+                </div>
+                
+                <div class="p-4 border rounded-lg">
+                    <div class="flex items-center mb-3">
+                        <div class="bg-green-100 p-2 rounded-full mr-3">
+                            <i class="fas fa-basketball-ball text-green-600"></i>
+                        </div>
+                        <h3 class="font-medium">Quadra</h3>
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <p class="text-2xl font-bold">65%</p>
+                            <p class="text-sm text-gray-500">Escolas com quadra</p>
+                        </div>
+                        <span class="text-green-500 text-sm font-medium">+5%</span>
+                    </div>
+                </div>
+                
+                <div class="p-4 border rounded-lg">
+                    <div class="flex items-center mb-3">
+                        <div class="bg-red-100 p-2 rounded-full mr-3">
+                            <i class="fas fa-book text-red-600"></i>
+                        </div>
+                        <h3 class="font-medium">Biblioteca</h3>
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <p class="text-2xl font-bold">58%</p>
+                            <p class="text-sm text-gray-500">Escolas com biblioteca</p>
+                        </div>
+                        <span class="text-green-500 text-sm font-medium">+3%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Data Table -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+            <div class="px-6 py-4 border-b">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xl font-semibold text-gray-800">Dados Detalhados por Estado</h2>
+                    <div class="relative">
+                        <input type="text" placeholder="Buscar estado..." class="bg-gray-100 border border-gray-300 text-gray-700 py-2 px-4 pl-10 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IDEB</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Evasão</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Internet</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Infraestrutura</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="states-table">
+                        <!-- Data will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="px-6 py-4 border-t flex items-center justify-between">
+                <div class="text-sm text-gray-500">
+                    Mostrando <span class="font-medium">1</span> a <span class="font-medium">10</span> de <span class="font-medium">27</span> estados
+                </div>
+                <div class="flex space-x-2">
+                    <button class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        Anterior
+                    </button>
+                    <button class="px-3 py-1 border rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                        1
+                    </button>
+                    <button class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        2
+                    </button>
+                    <button class="px-3 py-1 border rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                        Próximo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Educação Básica no Brasil</h3>
+                    <p class="text-gray-400">Dashboard interativo para análise de indicadores educacionais com base nos dados do INEP e outras fontes oficiais.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Fontes de Dados</h3>
+                    <ul class="space-y-2">
+                        <li><a href="https://www.gov.br/inep/pt-br" class="text-gray-400 hover:text-white">INEP - Censo Escolar</a></li>
+                        <li><a href="https://www.ibge.gov.br/" class="text-gray-400 hover:text-white">IBGE</a></li>
+                        <li><a href="http://brasil.io/" class="text-gray-400 hover:text-white">Brasil.IO</a></li>
+                        <li><a href="https://api.qedu.org.br/" class="text-gray-400 hover:text-white">Qedu API</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contato</h3>
+                    <p class="text-gray-400">Para sugestões ou dúvidas, entre em contato:</p>
+                    <div class="mt-2 space-y-1">
+                        <p class="text-gray-400"><i class="fas fa-envelope mr-2"></i> contato@educacaobrasil.org</p>
+                        <p class="text-gray-400"><i class="fas fa-phone mr-2"></i> (11) 1234-5678</p>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <p>© 2023 Dashboard Educação Básica. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sample data - in a real app, this would come from API calls
+        const statesData = [
+            { name: "Acre", ideb: 4.8, dropout: 9.2, internet: 65, infrastructure: 58, region: "norte" },
+            { name: "Alagoas", ideb: 4.3, dropout: 12.5, internet: 62, infrastructure: 52, region: "nordeste" },
+            { name: "Amapá", ideb: 4.6, dropout: 10.1, internet: 68, infrastructure: 60, region: "norte" },
+            { name: "Amazonas", ideb: 4.5, dropout: 11.3, internet: 63, infrastructure: 55, region: "norte" },
+            { name: "Bahia", ideb: 4.7, dropout: 10.8, internet: 70, infrastructure: 62, region: "nordeste" },
+            { name: "Ceará", ideb: 5.4, dropout: 7.9, internet: 78, infrastructure: 72, region: "nordeste" },
+            { name: "Distrito Federal", ideb: 5.8, dropout: 6.5, internet: 92, infrastructure: 85, region: "centro-oeste" },
+            { name: "Espírito Santo", ideb: 5.6, dropout: 7.1, internet: 85, infrastructure: 78, region: "sudeste" },
+            { name: "Goiás", ideb: 5.5, dropout: 7.3, internet: 82, infrastructure: 75, region: "centro-oeste" },
+            { name: "Maranhão", ideb: 4.2, dropout: 13.2, internet: 58, infrastructure: 50, region: "nordeste" },
+            { name: "Mato Grosso", ideb: 5.1, dropout: 8.4, internet: 75, infrastructure: 68, region: "centro-oeste" },
+            { name: "Mato Grosso do Sul", ideb: 5.2, dropout: 8.1, internet: 77, infrastructure: 70, region: "centro-oeste" },
+            { name: "Minas Gerais", ideb: 5.7, dropout: 6.8, internet: 88, infrastructure: 80, region: "sudeste" },
+            { name: "Pará", ideb: 4.4, dropout: 11.7, internet: 60, infrastructure: 53, region: "norte" },
+            { name: "Paraíba", ideb: 4.8, dropout: 9.8, internet: 72, infrastructure: 65, region: "nordeste" },
+            { name: "Paraná", ideb: 6.0, dropout: 5.9, internet: 90, infrastructure: 83, region: "sul" },
+            { name: "Pernambuco", ideb: 4.9, dropout: 9.5, internet: 75, infrastructure: 68, region: "nordeste" },
+            { name: "Piauí", ideb: 4.5, dropout: 10.9, internet: 65, infrastructure: 58, region: "nordeste" },
+            { name: "Rio de Janeiro", ideb: 5.3, dropout: 8.7, internet: 83, infrastructure: 76, region: "sudeste" },
+            { name: "Rio Grande do Norte", ideb: 4.7, dropout: 10.2, internet: 73, infrastructure: 66, region: "nordeste" },
+            { name: "Rio Grande do Sul", ideb: 5.9, dropout: 6.2, internet: 89, infrastructure: 82, region: "sul" },
+            { name: "Rondônia", ideb: 5.0, dropout: 8.9, internet: 72, infrastructure: 65, region: "norte" },
+            { name: "Roraima", ideb: 4.7, dropout: 10.5, internet: 67, infrastructure: 60, region: "norte" },
+            { name: "Santa Catarina", ideb: 6.1, dropout: 5.7, internet: 91, infrastructure: 84, region: "sul" },
+            { name: "São Paulo", ideb: 6.2, dropout: 5.5, internet: 93, infrastructure: 86, region: "sudeste" },
+            { name: "Sergipe", ideb: 4.6, dropout: 11.0, internet: 70, infrastructure: 63, region: "nordeste" },
+            { name: "Tocantins", ideb: 4.9, dropout: 9.1, internet: 73, infrastructure: 66, region: "norte" }
+        ];
+
+        // Initialize charts and data
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load states table
+            loadStatesTable(statesData);
+            
+            // Initialize IDEB chart
+            initIdebChart();
+            
+            // Initialize Dropout chart
+            initDropoutChart();
+            
+            // Initialize Time Series chart
+            initTimeSeriesChart();
+            
+            // Setup map interactions
+            setupMapInteractions();
+            
+            // Setup filter button
+            document.getElementById('apply-filters').addEventListener('click', applyFilters);
+        });
+
+        function loadStatesTable(data) {
+            const tableBody = document.getElementById('states-table');
+            tableBody.innerHTML = '';
+            
+            data.forEach(state => {
+                const row = document.createElement('tr');
+                
+                // Determine infrastructure color based on value
+                let infraColor = 'red';
+                if (state.infrastructure >= 70) infraColor = 'green';
+                else if (state.infrastructure >= 60) infraColor = 'yellow';
+                
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <img class="h-10 w-10 rounded-full" src="https://flagsapi.com/BR/flat/64.png" alt="${state.name} flag">
+                            </div>
+                            <div class="ml-4">
+                                <div class="text-sm font-medium text-gray-900">${state.name}</div>
+                                <div class="text-sm text-gray-500">${state.region}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${state.ideb}</div>
+                        <div class="text-sm text-gray-500">${state.ideb >= 5 ? 'Acima da meta' : 'Abaixo da meta'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${state.dropout}%</div>
+                        <div class="text-sm text-gray-500">${state.dropout < 8 ? 'Boa' : 'Preocupante'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${state.internet}%</div>
+                        <div class="text-sm text-gray-500">${state.internet >= 80 ? 'Boa' : 'Melhorar'}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-${infraColor}-100 text-${infraColor}-800">
+                            ${state.infrastructure}%
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button class="text-blue-600 hover:text-blue-900 mr-3">Detalhes</button>
+                        <button class="text-gray-600 hover:text-gray-900">Comparar</button>
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        function initIdebChart() {
+            const regions = {
+                norte: { name: "Norte", ideb: 0, count: 0 },
+                nordeste: { name: "Nordeste", ideb: 0, count: 0 },
+                centro_oeste: { name: "Centro-Oeste", ideb: 0, count: 0 },
+                sudeste: { name: "Sudeste", ideb: 0, count: 0 },
+                sul: { name: "Sul", ideb: 0, count: 0 }
+            };
+            
+            // Calculate average IDEB by region
+            statesData.forEach(state => {
+                const regionKey = state.region.replace('-', '_');
+                if (regions[regionKey]) {
+                    regions[regionKey].ideb += state.ideb;
+                    regions[regionKey].count++;
+                }
+            });
+            
+            const regionNames = [];
+            const regionAverages = [];
+            
+            for (const region in regions) {
+                if (regions[region].count > 0) {
+                    regionNames.push(regions[region].name);
+                    regionAverages.push((regions[region].ideb / regions[region].count).toFixed(1));
+                }
+            }
+            
+            const options = {
+                series: [{
+                    name: 'IDEB',
+                    data: regionAverages
+                }],
+                chart: {
+                    type: 'bar',
+                    height: '100%',
+                    toolbar: {
+                        show: false
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        horizontal: true,
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                colors: ['#3b82f6'],
+                xaxis: {
+                    categories: regionNames,
+                    title: {
+                        text: 'Média do IDEB'
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: 'Região'
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + " pontos";
+                        }
+                    }
+                }
+            };
+            
+            const chart = new ApexCharts(document.querySelector("#ideb-chart"), options);
+            chart.render();
+        }
+
+        function initDropoutChart() {
+            // Sort states by dropout rate (descending)
+            const sortedStates = [...statesData].sort((a, b) => b.dropout - a.dropout);
+            
+            const stateNames = sortedStates.map(state => state.name);
+            const dropoutRates = sortedStates.map(state => state.dropout);
+            
+            const options = {
+                series: [{
+                    name: 'Evasão Escolar',
+                    data: dropoutRates
+                }],
+                chart: {
+                    type: 'bar',
+                    height: '100%',
+                    toolbar: {
+                        show: false
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        borderRadius: 4,
+                        horizontal: false,
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                colors: ['#ef4444'],
+                xaxis: {
+                    categories: stateNames,
+                    labels: {
+                        show: false
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: 'Taxa de Evasão (%)'
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + "%";
+                        }
+                    }
+                }
+            };
+            
+            const chart = new ApexCharts(document.querySelector("#dropout-chart"), options);
+            chart.render();
+        }
+
+        function initTimeSeriesChart() {
+            const ctx = document.getElementById('ideb-time-series').getContext('2d');
+            
+            // Sample time series data
+            const years = [2015, 2017, 2019, 2021, 2022];
+            const idebFundamental = [4.5, 4.7, 4.9, 5.1, 5.2];
+            const idebMedio = [3.9, 4.1, 4.3, 4.5, 4.7];
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: [
+                        {
+                            label: 'Ensino Fundamental',
+                            data: idebFundamental,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Ensino Médio',
+                            data: idebMedio,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + ' pontos';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 3,
+                            max: 6,
+                            title: {
+                                display: true,
+                                text: 'Pontuação IDEB'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Ano'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function setupMapInteractions() {
+            const map = document.getElementById('brazil-map');
+            const tooltip = document.getElementById('map-tooltip');
+            
+            // Sample coordinates for states (simplified)
+            const stateCoords = {
+                'Acre': { x: 20, y: 70 },
+                'Amapá': { x: 70, y: 30 },
+                'Amazonas': { x: 40, y: 40 },
+                'Pará': { x: 60, y: 50 },
+                'Rondônia': { x: 30, y: 60 },
+                'Roraima': { x: 50, y: 20 },
+                'Tocantins': { x: 60, y: 70 },
+                'Alagoas': { x: 85, y: 85 },
+                'Bahia': { x: 75, y: 80 },
+                'Ceará': { x: 80, y: 60 },
+                'Maranhão': { x: 70, y: 60 },
+                'Paraíba': { x: 85, y: 70 },
+                'Pernambuco': { x: 85, y: 75 },
+                'Piauí': { x: 75, y: 70 },
+                'Rio Grande do Norte': { x: 85, y: 65 },
+                'Sergipe': { x: 80, y: 85 },
+                'Goiás': { x: 50, y: 80 },
+                'Mato Grosso': { x: 40, y: 70 },
+                'Mato Grosso do Sul': { x: 40, y: 85 },
+                'Distrito Federal': { x: 55, y: 80 },
+                'Espírito Santo': { x: 70, y: 90 },
+                'Minas Gerais': { x: 65, y: 90 },
+                'Rio de Janeiro': { x: 70, y: 95 },
+                'São Paulo': { x: 60, y: 95 },
+                'Paraná': { x: 50, y: 95 },
+                'Rio Grande do Sul': { x: 45, y: 105 },
+                'Santa Catarina': { x: 50, y: 100 }
+            };
+            
+            // Add dots to the map for each state
+            Object.keys(stateCoords).forEach(stateName => {
+                const state = statesData.find(s => s.name === stateName);
+                if (state) {
+                    const dot = document.createElement('div');
+                    const dotSize = 12;
+                    const x = stateCoords[stateName].x;
+                    const y = stateCoords[stateName].y;
+                    
+                    // Determine color based on infrastructure
+                    let color = 'red';
+                    if (state.infrastructure >= 70) color = 'green';
+                    else if (state.infrastructure >= 60) color = 'yellow';
+                    
+                    dot.style.position = 'absolute';
+                    dot.style.left = `${x}%`;
+                    dot.style.top = `${y}%`;
+                    dot.style.width = `${dotSize}px`;
+                    dot.style.height = `${dotSize}px`;
+                    dot.style.backgroundColor = color;
+                    dot.style.borderRadius = '50%';
+                    dot.style.transform = 'translate(-50%, -50%)';
+                    dot.style.cursor = 'pointer';
+                    dot.style.border = '2px solid white';
+                    
+                    dot.addEventListener('mouseover', () => {
+                        tooltip.innerHTML = `
+                            <strong>${state.name}</strong><br>
+                            IDEB: ${state.ideb}<br>
+                            Evasão: ${state.dropout}%<br>
+                            Infraestrutura: ${state.infrastructure}%
+                        `;
+                        tooltip.style.display = 'block';
+                        tooltip.style.left = `${x + 5}%`;
+                        tooltip.style.top = `${y}%`;
+                    });
+                    
+                    dot.addEventListener('mouseout', () => {
+                        tooltip.style.display = 'none';
+                    });
+                    
+                    dot.addEventListener('click', () => {
+                        alert(`Detalhes de ${state.name}\nIDEB: ${state.ideb}\nEvasão: ${state.dropout}%\nInternet: ${state.internet}%\nInfraestrutura: ${state.infrastructure}%`);
+                    });
+                    
+                    map.parentNode.appendChild(dot);
+                }
+            });
+        }
+
+        function applyFilters() {
+            const regionFilter = document.getElementById('region-filter').value;
+            const educationLevel = document.getElementById('education-level').value;
+            const schoolType = document.getElementById('school-type').value;
+            
+            // In a real app, we would make an API call with these filters
+            // For now, we'll just filter our sample data by region
+            let filteredData = statesData;
+            
+            if (regionFilter !== 'all') {
+                filteredData = statesData.filter(state => state.region === regionFilter);
+            }
+            
+            // Reload table with filtered data
+            loadStatesTable(filteredData);
+            
+            // Show loading indicator
+            const loading = document.createElement('div');
+            loading.className = 'loading-spinner';
+            document.getElementById('states-table').appendChild(loading);
+            
+            // Simulate API delay
+            setTimeout(() => {
+                loading.remove();
+            }, 800);
+        }
+    </script>
+</body>
+</html>

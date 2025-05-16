@@ -1,0 +1,164 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  color: #1e1e1e;
+  background: #ffffff;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 20px;
+}
+
+.navbar {
+  background: #1d4ed8;
+  padding: 20px 0;
+  color: white;
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar nav a {
+  margin-left: 20px;
+  color: white;
+  font-weight: 500;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.hero {
+  background: #3b82f6;
+  text-align: center;
+  padding: 100px 20px;
+  color: white;
+}
+
+.hero h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+.btn {
+  background: white;
+  color: #1d4ed8;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: bold;
+}
+
+.sobre {
+  background: #f9fafb;
+}
+
+.sobre h2 {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.sobre-grid {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.sobre-grid > div {
+  flex: 1;
+  min-width: 280px;
+}
+
+.box-azul {
+  background: #e0f2fe;
+  border-left: 4px solid #0284c7;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.indicadores {
+  background: white;
+}
+
+.indicadores h2 {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.cards {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  flex: 1;
+  min-width: 250px;
+  max-width: 300px;
+  text-align: center;
+}
+
+.icon {
+  font-size: 24px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.contato {
+  background: #1d4ed8;
+  color: white;
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.contato .btn {
+  background: white;
+  color: #1d4ed8;
+  margin-top: 20px;
+}
+
+footer {
+  background: #0f172a;
+  color: white;
+  padding: 40px 20px;
+}
+
+.footer-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  justify-content: space-between;
+}
+
+footer h4 {
+  margin-bottom: 10px;
+}
+
+footer ul {
+  list-style: none;
+  padding: 0;
+}
+
+footer ul li {
+  margin-bottom: 8px;
+}
