@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Dados Educacionais por Estado</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        .card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .state-row:hover {
+            background-color: #f8fafc;
+        }
+        .highlight {
+            background-color: #e6fffa;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-green {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        .badge-yellow {
+            background-color: #fef9c3;
+            color: #854d0e;
+        }
+        .badge-red {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-10 text-center">
+            <h1 class="text-4xl font-bold text-indigo-800 mb-2">Análise de Dados Educacionais por Estado</h1>
+            <p class="text-xl text-gray-600">Comparativo completo dos indicadores educacionais brasileiros</p>
+            <div class="mt-6 bg-gradient-to-r from-indigo-500 to-purple-600 h-1 rounded-full"></div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+            <div class="card bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Média Nacional</p>
+                        <h3 class="text-3xl font-bold text-indigo-600">IDEB</h3>
+                    </div>
+                    <div class="bg-indigo-100 p-3 rounded-full">
+                        <i class="fas fa-graduation-cap text-indigo-600 text-2xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <p class="text-2xl font-semibold">5.6</p>
+                    <div class="flex items-center mt-2">
+                        <span class="text-green-500 mr-1"><i class="fas fa-chart-line"></i></span>
+                        <span class="text-gray-600">Evolução 12% desde 2015</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Média Nacional</p>
+                        <h3 class="text-3xl font-bold text-blue-600">Aprendizado</h3>
+                    </div>
+                    <div class="bg-blue-100 p-3 rounded-full">
+                        <i class="fas fa-book-open text-blue-600 text-2xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <p class="text-2xl font-semibold">6.0464</p>
+                    <div class="flex items-center mt-2">
+                        <span class="text-green-500 mr-1"><i class="fas fa-chart-line"></i></span>
+                        <span class="text-gray-600">Evolução 8% desde 2015</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Média Nacional</p>
+                        <h3 class="text-3xl font-bold text-green-600">Fluxo</h3>
+                    </div>
+                    <div class="bg-green-100 p-3 rounded-full">
+                        <i class="fas fa-exchange-alt text-green-600 text-2xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <p class="text-2xl font-semibold">0.9287</p>
+                    <div class="flex items-center mt-2">
+                        <span class="text-green-500 mr-1"><i class="fas fa-chart-line"></i></span>
+                        <span class="text-gray-600">Evolução 5% desde 2015</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500">Média Nacional</p>
+                        <h3 class="text-3xl font-bold text-purple-600">Aprovação</h3>
+                    </div>
+                    <div class="bg-purple-100 p-3 rounded-full">
+                        <i class="fas fa-check-circle text-purple-600 text-2xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <p class="text-2xl font-semibold">92.5%</p>
+                    <div class="flex items-center mt-2">
+                        <span class="text-green-500 mr-1"><i class="fas fa-chart-line"></i></span>
+                        <span class="text-gray-600">Evolução 7% desde 2015</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+            <div class="card bg-white rounded-lg shadow p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-trophy mr-2 text-yellow-500"></i> Ranking de IDEB por Estado
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Posição</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IDEB</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Comparação</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr class="state-row highlight">
+                                <td class="px-4 py-3 whitespace-nowrap font-bold">1º</td>
+                                <td class="px-4 py-3 whitespace-nowrap">Paraná</td>
+                                <td class="px-4 py-3 whitespace-nowrap font-bold">6.8</td>
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    <span class="badge badge-green">
+                                        <i class="fas fa-arrow-up mr-1"></i> 21.4% acima da média
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="state-row">
+                                <td class="px-4 py-3 whitespace-nowrap">2º</td>
+                                <td class="px-4 py-3 whitespace-nowrap">São Paulo</td>
+                                <td class="px-4 py-3 whitespace-nowrap">6.6</td>
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    <span class="badge badge-green">
+                                        <i class="fas fa-arrow-up mr-1"></i> 17.9% acima da média
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="state-row">
+                                <td class="px-4 py-3 whitespace-nowrap">3º</td>
+                                <td class="px-4 py-3 whitespace-nowrap">Ceará</td>
+                                <td class="px-4 py-3 whitespace-nowrap">6.5</td>
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    <span class="badge badge-green">
+                                        <i class="fas fa-arrow-up mr-1"></i> 16.1% acima da média
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="state-row">
+                                <td class="px-4 py-3 whitespace-nowrap">4º</td>
+                                <td class="px-4 py-3 whitespace-nowrap">Minas Gerais</td>
+                                <td class="px-4 py-3 whitespace-nowrap">6.5</td>
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    <span class="badge badge-green">
+                                        <i class="fas fa-arrow-up mr-1"></i> 16.1% acima da média
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="state-row">
+                                <td class="px-4 py-3 whitespace-nowrap">5º</td>
+                                <td class="px-4 py-3 whitespace-nowrap">Goiás</td>
+                                <td class="px-4 py-3 whitespace-nowrap">6.4</td>
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    <span class="badge badge-green">
+                                        <i class="fas fa-arrow-up mr-1"></i> 14.3% acima da média
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr class="state-row">
+                                <td class="px-4 py-3 whitespace-nowrap">25º</td>
+                                <td class="px-4 py-3 whitespace-nowrap">Maranhão</td>
+                                <td class="px-4 py-3 whitespace-nowrap">3.9</td>
+                                <td class="px-4 py-3 whitespace-nowrap">
+                                    <span class="badge badge-red">
+                                        <i class="fas fa-arrow-down mr-1"></i> 30.4% abaixo da média
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 text-sm text-gray-500">
+                    <i class="fas fa-info-circle mr-1"></i> Destaque para o Paraná com o melhor IDEB (6.8) e Maranhão com o pior (3.9)
+                </div>
+            </div>
+
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-10">
+            <div class="card bg-white rounded-lg shadow p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-chart-bar mr-2 text-purple-500"></i> Distribuição de Estados por Faixa de IDEB
+                </h2>
+                <div class="h-64">
+                    <canvas id="idebBarChart"></canvas>
+                </div>
+                <div class="mt-4 text-sm text-gray-500">
+                    <i class="fas fa-info-circle mr-1"></i> Distribuição dos estados nas faixas de IDEB (Alto, Médio e Baixo)
+                </div>
+            </div>
+
+            <div class="card bg-white rounded-lg shadow p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-list-ol mr-2 text-green-500"></i> Ranking de Aprendizado e Aprovação
+                </h2>
+                <div class="overflow-y-auto" style="max-height: 300px;">
+                    <ol class="list-decimal pl-5 space-y-2">
+                        <li class="font-bold">Paraná - Aprendizado: 7.5927 | Aprovação: 89.8%</li>
+                        <li>São Paulo - Aprendizado: 6.6611 | Aprovação: 99.0%</li>
+                        <li>Ceará - Aprendizado: 6.8664 | Aprovação: 95.0%</li>
+                        <li>Minas Gerais - Aprendizado: 6.4830 | Aprovação: 99.5%</li>
+                        <li>Goiás - Aprendizado: 6.5197 | Aprovação: 98.5%</li>
+                        <li>Distrito Federal - Aprendizado: 6.4693 | Aprovação: 94.8%</li>
+                        <li>Espírito Santo - Aprendizado: 6.3011 | Aprovação: 95.9%</li>
+                        <li>Piauí - Aprendizado: 6.4291 | Aprovação: 92.2%</li>
+                        <li>Rio Grande do Sul - Aprendizado: 6.2864 | Aprovação: 92.3%</li>
+                        <li>Santa Catarina - Aprendizado: 6.2363 | Aprovação: 94.6%</li>
+                        <!-- Continue com os demais estados em ordem decrescente -->
+                    </ol>
+                </div>
+                <div class="mt-4 text-sm text-gray-500">
+                    <i class="fas fa-info-circle mr-1"></i> Lista ordenada por aprendizado (maior para menor)
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-white rounded-lg shadow overflow-hidden mb-10">
+            <h2 class="text-xl font-bold text-gray-800 p-6 pb-0 flex items-center">
+                <i class="fas fa-table mr-2 text-gray-500"></i> Tabela Completa de Dados por Estado
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IDEB</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aprendizado</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fluxo</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aprovação</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desempenho</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Acre</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.2</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.5505</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9415</td>
+                            <td class="px-6 py-4 whitespace-nowrap">94.1%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-green">Alto</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Alagoas</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.2</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.4653</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9527</td>
+                            <td class="px-6 py-4 whitespace-nowrap">95.1%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-yellow">Médio</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Amapá</td>
+                            <td class="px-6 py-4 whitespace-nowrap">4.8</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.3548</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.8907</td>
+                            <td class="px-6 py-4 whitespace-nowrap">88.7%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-red">Baixo</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Amazonas</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.8</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.0438</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9563</td>
+                            <td class="px-6 py-4 whitespace-nowrap">95.4%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-yellow">Médio</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Bahia</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.0</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.7648</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.8664</td>
+                            <td class="px-6 py-4 whitespace-nowrap">86.3%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-yellow">Médio</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Ceará</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.5</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.8664</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9513</td>
+                            <td class="px-6 py-4 whitespace-nowrap">95.0%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-green">Alto</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Distrito Federal</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.1</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.4693</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9485</td>
+                            <td class="px-6 py-4 whitespace-nowrap">94.8%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-green">Alto</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Espírito Santo</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.1</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.3011</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9603</td>
+                            <td class="px-6 py-4 whitespace-nowrap">95.9%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-green">Alto</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Goiás</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.4</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.5197</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9877</td>
+                            <td class="px-6 py-4 whitespace-nowrap">98.5%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-green">Alto</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Maranhão</td>
+                            <td class="px-6 py-4 whitespace-nowrap">3.9</td>
+                            <td class="px-6 py-4 whitespace-nowrap">4.7360</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.8148</td>
+                            <td class="px-6 py-4 whitespace-nowrap">81.1%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-red">Baixo</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Mato Grosso</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.6</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.7568</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9697</td>
+                            <td class="px-6 py-4 whitespace-nowrap">97.1%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-yellow">Médio</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Mato Grosso do Sul</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.7</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.1149</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9308</td>
+                            <td class="px-6 py-4 whitespace-nowrap">92.4%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-yellow">Médio</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Minas Gerais</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.5</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.4830</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9954</td>
+                            <td class="px-6 py-4 whitespace-nowrap">99.5%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-green">Alto</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Pará</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.0</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.4123</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9160</td>
+                            <td class="px-6 py-4 whitespace-nowrap">90.9%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-yellow">Médio</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Paraíba</td>
+                            <td class="px-6 py-4 whitespace-nowrap">4.9</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.3937</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9165</td>
+                            <td class="px-6 py-4 whitespace-nowrap">90.9%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-red">Baixo</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row highlight">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Paraná</td>
+                            <td class="px-6 py-4 whitespace-nowrap font-bold">6.8</td>
+                            <td class="px-6 py-4 whitespace-nowrap font-bold">7.5927</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.8980</td>
+                            <td class="px-6 py-4 whitespace-nowrap">89.8%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-green">Excelente</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Pernambuco</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.0</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.8508</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.8573</td>
+                            <td class="px-6 py-4 whitespace-nowrap">85.8%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-yellow">Médio</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Piauí</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.0</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.4291</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9334</td>
+                            <td class="px-6 py-4 whitespace-nowrap">92.2%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-green">Alto</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Rio de Janeiro</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.4</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.0516</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9005</td>
+                            <td class="px-6 py-4 whitespace-nowrap">89.9%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-yellow">Médio</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Rio Grande do Norte</td>
+                            <td class="px-6 py-4 whitespace-nowrap">4.9</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.3610</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9155</td>
+                            <td class="px-6 py-4 whitespace-nowrap">90.6%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-red">Baixo</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Rio Grande do Sul</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.8</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.2864</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9247</td>
+                            <td class="px-6 py-4 whitespace-nowrap">92.3%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-yellow">Médio</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Rondônia</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.7</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.0244</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9412</td>
+                            <td class="px-6 py-4 whitespace-nowrap">93.5%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-yellow">Médio</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Roraima</td>
+                            <td class="px-6 py-4 whitespace-nowrap">N/A</td>
+                            <td class="px-6 py-4 whitespace-nowrap">N/A</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9269</td>
+                            <td class="px-6 py-4 whitespace-nowrap">92.7%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge">Sem dados</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Santa Catarina</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.9</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.2363</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9476</td>
+                            <td class="px-6 py-4 whitespace-nowrap">94.6%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-yellow">Médio</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">São Paulo</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.6</td>
+                            <td class="px-6 py-4 whitespace-nowrap">6.6611</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9903</td>
+                            <td class="px-6 py-4 whitespace-nowrap">99.0%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-green">Alto</span>
+                            </td>
+                        </tr>
+                        <tr class="state-row">
+                            <td class="px-6 py-4 whitespace-nowrap font-medium">Sergipe</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.0</td>
+                            <td class="px-6 py-4 whitespace-nowrap">5.4353</td>
+                            <td class="px-6 py-4 whitespace-nowrap">0.9134</td>
+                            <td class="px-6 py-4 whitespace-nowrap">90.0%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-yellow">Médio</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card bg-white rounded-lg shadow p-6 mb-10">
+            <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-lightbulb mr-2 text-yellow-500"></i> Principais Insights
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-blue-800 mb-2 flex items-center">
+                        <i class="fas fa-trophy mr-2"></i> Melhores Desempenhos
+                    </h3>
+                    <ul class="list-disc pl-5 text-blue-700">
+                        <li class="mb-1">Paraná lidera em IDEB (6.8) e Aprendizado (7.5927)</li>
+                        <li class="mb-1">Minas Gerais tem o melhor Fluxo (0.9954) e Aprovação (99.5%)</li>
+                        <li class="mb-1">Região Sul e Sudeste dominam o topo do ranking</li>
+                    </ul>
+                </div>
+                <div class="bg-red-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-red-800 mb-2 flex items-center">
+                        <i class="fas fa-exclamation-triangle mr-2"></i> Desafios
+                    </h3>
+                    <ul class="list-disc pl-5 text-red-700">
+                        <li class="mb-1">Maranhão tem o pior IDEB (3.9) e Aprovação (81.1%)</li>
+                        <li class="mb-1">Região Nordeste concentra os piores indicadores</li>
+                        <li class="mb-1">Amapá e Maranhão abaixo de 5.0 no IDEB</li>
+                    </ul>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-green-800 mb-2 flex items-center">
+                        <i class="fas fa-chart-line mr-2"></i> Tendências Positivas
+                    </h3>
+                    <ul class="list-disc pl-5 text-green-700">
+                        <li class="mb-1">Ceará se destaca no Nordeste com IDEB 6.5</li>
+                        <li class="mb-1">Piauí tem bom desempenho relativo na região (IDEB 6.0)</li>
+                        <li class="mb-1">Goiás e Distrito Federal com indicadores acima da média</li>
+                    </ul>
+                </div>
+                <div class="bg-purple-50 p-4 rounded-lg">
+                    <h3 class="font-bold text-purple-800 mb-2 flex items-center">
+                        <i class="fas fa-balance-scale mr-2"></i> Correlações
+                    </h3>
+                    <ul class="list-disc pl-5 text-purple-700">
+                        <li class="mb-1">Alto aprendizado geralmente acompanha alto IDEB</li>
+                        <li class="mb-1">Fluxo e aprovação têm forte correlação (r=0.89)</li>
+                        <li class="mb-1">Estados com IDEB alto mantêm bons indicadores em outras métricas</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-xl font-bold">Análise de Dados Educacionais</h3>
+                    <p class="text-gray-400">Indicadores por estado - Brasil</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-white">
+                        <i class="fab fa
+</html>
